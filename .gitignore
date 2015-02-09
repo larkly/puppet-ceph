@@ -1,3 +1,4 @@
 *.vdi
 *.swp
 Gemfile.lock
+.vagrant/

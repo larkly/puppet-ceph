@@ -25,13 +25,13 @@ grep -q "ceph-mds1" /etc/hosts || echo "192.168.251.151	ceph-mds1 ceph-mds1.test
 aptitude update
 
 # Install ruby 1.8 and ensure it is the default
-aptitude install -y ruby1.8
-update-alternatives --set ruby /usr/bin/ruby1.8
+aptitude install -y ruby
+#update-alternatives --set ruby /usr/bin/ruby1.9.1
 
 
 # Install puppetmaster, etc. ...
 if hostname | grep -q "ceph-mon0"; then
-    aptitude install -y puppetmaster sqlite3 libsqlite3-ruby libactiverecord-ruby git augeas-tools puppet ruby1.8-dev libruby1.8
+    aptitude install -y puppetmaster sqlite3 ruby-sqlite3 ruby-activerecord git augeas-tools puppet ruby-dev libruby
 
     # This lens seems to be broken currently on wheezy/sid ?
     # test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug

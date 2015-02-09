@@ -2,13 +2,15 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "wheezy64"
-  config.vm.box_url = "http://os.enocloud.com:8080/v1/AUTH_fc47c4103c9b4aaf9271c581776a268f/public/wheezy64.box"
+  config.vm.box = "puppetlabs/ubuntu-14.04-64-puppet"
+  #config.vm.box = "wheezy64"
+  #config.vm.box_url = "http://os.enocloud.com:8080/v1/AUTH_fc47c4103c9b4aaf9271c581776a268f/public/wheezy64.box"
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
     vb.customize ["modifyvm", :id, "--nictype3", "virtio"]
+    vb.customize ["storagectl", :id, "--name", "SATA Controller", "--add", "sata"]
   end
 
   (0..2).each do |i|
@@ -30,16 +32,17 @@ Vagrant.configure("2") do |config|
         osd.vm.provider :virtualbox do |vb|
           vb.customize [ "createhd", "--filename", "disk-#{i}-#{d}", "--size", "5000" ]
           vb.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
+          #vb.customize [ "storageattach", :id, "--storagectl", "SAS Controller", "--port", 1, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
         end
       end
     end
   end
 
-  (0..1).each do |i|
-    config.vm.define "mds#{i}" do |mds|
-      mds.vm.hostname = "ceph-mds#{i}.test"
-      mds.vm.network :private_network, ip: "192.168.251.15#{i}"
-      mds.vm.provision :shell, :path => "examples/mds.sh"
-    end
-  end
+#  (0..1).each do |i|
+#    config.vm.define "mds#{i}" do |mds|
+#      mds.vm.hostname = "ceph-mds#{i}.test"
+#      mds.vm.network :private_network, ip: "192.168.251.15#{i}"
+#      mds.vm.provision :shell, :path => "examples/mds.sh"
+#    end
+#  end
 end
