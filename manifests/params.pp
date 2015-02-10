@@ -7,7 +7,6 @@ class ceph::params {
       case $::operatingsystem {
         'Ubuntu': {
           $service_provider = 'init'
-          $apt_source_location = 'http://ceph.com/debian-giant'
         }
         default: {
           $service_provider = undef

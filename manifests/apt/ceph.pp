@@ -31,7 +31,7 @@
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
 class ceph::apt::ceph (
-  $release             = 'giant',
+  $release             = 'bobtail',
   $apt_key_source      = 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc',
   $apt_key_id          = '17ED316D',
   $apt_source_location = undef
