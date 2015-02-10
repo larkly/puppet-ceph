@@ -1,5 +1,6 @@
 $fsid = '07d28faa-48ae-4356-a8e3-19d5b81e159e'
 $mon_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
+$apt_source_location = 'http://ceph.com/debian-firefly'
 
 Exec {
   path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'

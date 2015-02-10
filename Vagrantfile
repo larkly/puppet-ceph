@@ -3,8 +3,6 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "puppetlabs/ubuntu-14.04-64-puppet"
-  #config.vm.box = "wheezy64"
-  #config.vm.box_url = "http://os.enocloud.com:8080/v1/AUTH_fc47c4103c9b4aaf9271c581776a268f/public/wheezy64.box"
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -30,9 +28,8 @@ Vagrant.configure("2") do |config|
       osd.vm.provision :shell, :path => "examples/osd.sh"
       (0..1).each do |d|
         osd.vm.provider :virtualbox do |vb|
-          vb.customize [ "createhd", "--filename", "disk-#{i}-#{d}", "--size", "5000" ]
+          vb.customize [ "createhd", "--filename", "disk-#{i}-#{d}", "--size", "10000" ]
           vb.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
-          #vb.customize [ "storageattach", :id, "--storagectl", "SAS Controller", "--port", 1, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
         end
       end
     end
