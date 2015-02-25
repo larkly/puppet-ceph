@@ -27,8 +27,8 @@ grep -q "ceph-mds1" /etc/hosts || echo "192.168.251.151	ceph-mds1 ceph-mds1.test
 aptitude update
 
 # Install ruby 1.8 and ensure it is the default
-aptitude install -y ruby1.8
-update-alternatives --set ruby /usr/bin/ruby1.8
+aptitude install -y ruby
+#update-alternatives --set ruby /usr/bin/ruby1.9.1
 
 
 # Install puppetmaster, etc. ...
