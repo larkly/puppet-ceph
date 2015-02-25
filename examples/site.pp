@@ -46,24 +46,26 @@ node 'puppetmaster.test' {
 
 node 'gitlab.test' {
   include docker
-  docker::run { 'gitlab-postgresql':
+  docker::image { 'sameersbn/postgresql': }
+  docker::image { 'sameersbn/redis': }
+  docker::image { 'sameersbn/gitlab': }
+  docker::run { 'gitlab_postgresql':
     image => 'sameersbn/postgresql',
     env => ['DB_NAME=gitlabhq_production', 'DB_USER=gitlab', 'DB_PASS=password'],
-    volumes => ['/vagrant/examples/gitlab/postgresql:/var/lib/postgresql'],
-    pull_on_start => true,
+    volumes => ['/opt/postgresql:/var/lib/postgresql'],
+    use_name => true,
   }
-  docker::run { 'gitlab-redis':
+  docker::run { 'gitlab_redis':
     image => 'sameersbn/redis',
-    #env => ['DB_NAME=gitlabhq_production', 'DB_USER=gitlab', 'DB_PASS=password'],
-    pull_on_start => true,
+    use_name => true,
   }
   docker::run { 'gitlab':
     image => 'sameersbn/gitlab',
     ports => ['80', '443', '22'],
     expose => ['80', '443'],
-    pull_on_start => true,
-    links => 'gitlab-postgresql:postgresql',
-    #depends => 'gitlab-postgresql',
+    links => ['gitlab_postgresql:postgresql', 'gitlab_redis:redisio'],
+    depends => ['gitlab_postgresql', 'gitlab_redis'],
+    use_name => true,
   }
 }
 

@@ -12,6 +12,8 @@ grep -q 'supersede domain-name "test";' /etc/dhcp/dhclient.conf ||  {
     dhclient eth0
 }
 
+sed -i 's,us.archive,no.archive,g' /etc/apt/sources.list
+
 # add hosts to /etc/hosts
 grep -q "puppetmaster" /etc/hosts || echo "192.168.251.5	puppetmaster puppetmaster.test" >> /etc/hosts
 grep -q "gitlab" /etc/hosts || echo "192.168.251.6	gitlab gitlab.test" >> /etc/hosts
