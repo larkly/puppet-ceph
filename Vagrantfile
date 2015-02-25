@@ -11,6 +11,18 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--nictype3", "virtio"]
   end
 
+  config.vm.define "puppetmaster" do |puppetmaster|
+    puppetmaster.vm.hostname = "puppetmaster.test"
+    puppetmaster.vm.network :private_network, ip: "192.168.251.5"
+    puppetmaster.vm.provision :shell, :path => "examples/common.sh"
+  end
+
+  config.vm.define "gitlab" do |gitlab|
+    gitlab.vm.hostname = "gitlab.test"
+    gitlab.vm.network :private_network, ip: "192.168.251.6"
+    gitlab.vm.provision :shell, :path => "examples/common.sh"
+  end
+
   (0..2).each do |i|
     config.vm.define "mon#{i}" do |mon|
       mon.vm.hostname = "ceph-mon#{i}.test"
@@ -20,7 +32,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  (0..2).each do |i|
+  (0..4).each do |i|
     config.vm.define "osd#{i}" do |osd|
       osd.vm.hostname = "ceph-osd#{i}.test"
       osd.vm.network :private_network, ip: "192.168.251.10#{i}"
@@ -32,6 +44,10 @@ Vagrant.configure("2") do |config|
           vb.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
         end
       end
+      #osd.vm.provider :virtualbox do |journal|
+      #  journal.customize [ "createhd", "--filename", "disk-#{i}-journal", "--size", "5000" ]
+      #  journal.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 2, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-journal.vdi" ]
+      #end
     end
   end
 

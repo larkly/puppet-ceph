@@ -13,6 +13,8 @@ grep -q 'supersede domain-name "test";' /etc/dhcp/dhclient.conf ||  {
 }
 
 # add hosts to /etc/hosts
+grep -q "puppetmaster" /etc/hosts || echo "192.168.251.5	puppetmaster puppetmaster.test" >> /etc/hosts
+grep -q "gitlab" /etc/hosts || echo "192.168.251.6	gitlab gitlab.test" >> /etc/hosts
 grep -q "ceph-mon0" /etc/hosts || echo "192.168.251.10	ceph-mon0 ceph-mon0.test" >> /etc/hosts
 grep -q "ceph-mon1" /etc/hosts || echo "192.168.251.11	ceph-mon1 ceph-mon1.test" >> /etc/hosts
 grep -q "ceph-mon2" /etc/hosts || echo "192.168.251.12	ceph-mon2 ceph-mon2.test" >> /etc/hosts
@@ -30,14 +32,14 @@ update-alternatives --set ruby /usr/bin/ruby1.8
 
 
 # Install puppetmaster, etc. ...
-if hostname | grep -q "ceph-mon0"; then
-    aptitude install -y puppetmaster sqlite3 libsqlite3-ruby libactiverecord-ruby git augeas-tools puppet ruby1.8-dev libruby1.8
+if hostname | grep -q "puppetmaster"; then
+    aptitude install -y puppetmaster sqlite3 ruby-sqlite3 ruby-activerecord git augeas-tools puppet ruby-dev libruby
 
     # This lens seems to be broken currently on wheezy/sid ?
     # test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
     augtool << EOT
 set /files/etc/puppet/puppet.conf/agent/pluginsync true
-set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
+set /files/etc/puppet/puppet.conf/agent/server puppetmaster.test
 set /files/etc/puppet/puppet.conf/master/storeconfigs true
 set /files/etc/puppet/puppet.conf/master/dbadapter sqlite3
 save
@@ -60,7 +62,7 @@ else
     test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
     augtool << EOT
 set /files/etc/puppet/puppet.conf/agent/pluginsync true
-set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
+set /files/etc/puppet/puppet.conf/agent/server puppetmaster.test
 save
 EOT
 

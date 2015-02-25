@@ -40,6 +40,32 @@ class role_ceph_mon (
 
 }
 
+node 'puppetmaster.test' {
+}
+
+node 'gitlab.test' {
+  include docker
+  docker::run { 'gitlab-postgresql':
+    image => 'sameersbn/postgresql',
+    env => ['DB_NAME=gitlabhq_production', 'DB_USER=gitlab', 'DB_PASS=password'],
+    volumes => ['/vagrant/examples/gitlab/postgresql:/var/lib/postgresql'],
+    pull_on_start => true,
+  }
+  docker::run { 'gitlab-redis':
+    image => 'sameersbn/redis',
+    #env => ['DB_NAME=gitlabhq_production', 'DB_USER=gitlab', 'DB_PASS=password'],
+    pull_on_start => true,
+  }
+  docker::run { 'gitlab':
+    image => 'sameersbn/gitlab',
+    ports => ['80', '443', '22'],
+    expose => ['80', '443'],
+    pull_on_start => true,
+    links => 'gitlab-postgresql:postgresql',
+    #depends => 'gitlab-postgresql',
+  }
+}
+
 node 'ceph-mon0.test' {
   if !empty($::ceph_admin_key) {
     @@ceph::key { 'admin':
@@ -70,8 +96,10 @@ node /ceph-osd.?\.test/ {
     cluster_address => $ipaddress_eth2,
   }
 
-  ceph::osd::device { '/dev/sdb': }
-  ceph::osd::device { '/dev/sdc': }
+  #ceph::osd::device { '/dev/sdb': journal => '/dev/sdd1' }
+  ceph::osd::device { '/dev/sdb':  }
+  #ceph::osd::device { '/dev/sdc': journal => '/dev/sdd2' }
+  ceph::osd::device { '/dev/sdc':  }
 }
 
 node 'ceph-mds0.test' {
