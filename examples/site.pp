@@ -64,6 +64,7 @@ node 'gitlab.test' {
     ports => ['80', '443', '22'],
     expose => ['80', '443'],
     links => ['gitlab_postgresql:postgresql', 'gitlab_redis:redisio'],
+    volumes => ['/opt/gitlab:/home'],
     depends => ['gitlab_postgresql', 'gitlab_redis'],
     use_name => true,
   }

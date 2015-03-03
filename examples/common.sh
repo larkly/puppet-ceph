@@ -52,7 +52,8 @@ EOT
 
     test -f /etc/puppet/modules/concat || puppet module install ripienaar/concat
     test -f /etc/puppet/modules/apt || puppet module install puppetlabs/apt
-    test -f /etc/puppet/modules/ceph || ln -s /vagrant /etc/puppet/modules/ceph
+    test -f /etc/puppet/modules/ceph || puppet module install eNovance-ceph
+    test -f /etc/puppet/modules/docker || puppet module install garethr-docker
 
     test -h /etc/puppet/manifests/site.pp || ln -s /vagrant/examples/site.pp /etc/puppet/manifests/
 
